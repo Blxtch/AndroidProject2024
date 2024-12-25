@@ -1,0 +1,62 @@
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@drawable/background_login"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Add User Button (Admin Only) -->
+        <Button
+            android:id="@+id/add_user_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:text="Manage Users"
+            android:textSize="20dp"
+            android:visibility="gone" />
+
+        <!-- Add Material Button (Admin Only) -->
+        <Button
+            android:id="@+id/addMaterialBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:text="Add Material"
+            android:textSize="20dp"
+            android:visibility="gone" />
+
+        <!-- Materials List Header -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="24dp"
+            android:text="Items List"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewInventory"
+            android:layout_width="362dp"
+            android:layout_height="match_parent"
+            android:layout_margin="16dp" />
+
+
+
+    </LinearLayout>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

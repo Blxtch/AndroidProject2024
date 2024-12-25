@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:gravity="center"
+    android:background="@drawable/background_login">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="16dp"
+        tools:layout_editor_absoluteX="-18dp"
+        tools:layout_editor_absoluteY="22dp">
+
+        <!-- Champ pour le nom d'utilisateur -->
+        <EditText
+            android:id="@+id/username_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:hint="New Username"
+            android:inputType="text" />
+
+        <!-- Champ pour le mot de passe -->
+        <EditText
+            android:id="@+id/password_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:hint="New Password"
+            android:inputType="textPassword" />
+
+        <!-- Champ pour l'email -->
+        <EditText
+            android:id="@+id/mail_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:hint="Email Address"
+            android:inputType="textEmailAddress" />
+
+        <!-- Dropdown pour le choix du rôle -->
+        <Spinner
+            android:id="@+id/role_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:spinnerMode="dropdown" />
+
+        <!-- Bouton pour ajouter un utilisateur -->
+        <Button
+            android:id="@+id/add_user_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#11AAFF"
+            android:text="Add User"
+            android:textColor="#FFFFFF" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="20dp"
+            android:text="Users list :"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/users_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp" />
+
+    </LinearLayout>
+
+</LinearLayout>
