@@ -2,6 +2,7 @@ package com.example.projetapplicationandroisromain2024
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.projetapplicationandroisromain2024.databinding.ActivityLoginBinding
@@ -21,7 +22,12 @@ class login_activity : AppCompatActivity() {
 
         // Check if super user exists, if not create one
         if (!dataBaseHelper.isSuperUserCreated()) {
+            binding.signupPage.visibility = View.VISIBLE
+            binding.loginPage.visibility = View.GONE
             createSuperUser()
+        }else {
+            binding.signupPage.visibility = View.GONE
+            binding.loginPage.visibility = View.VISIBLE
         }
 
         binding.loginBtn.setOnClickListener {
@@ -32,11 +38,29 @@ class login_activity : AppCompatActivity() {
     }
 
     private fun createSuperUser() {
-        val username = "admin"
-        val password = "admin123"
+        binding.signUpButton.setOnClickListener {
+            val signupEmail = binding.SUEmailInput.text.toString()
+            val signupPassword = binding.SUPasswordInput.text.toString()
 
-        dataBaseHelper.insertUser(username, password, 0, username)
-        Toast.makeText(this, "Super user created: $username/$password", Toast.LENGTH_LONG).show()
+            if (signupPassword.count() < 4) {
+                Toast.makeText(this,"Password is too short must have a minimum of 4 characters", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (signupEmail.isBlank() || signupPassword.isBlank()) {
+                Toast.makeText(this, "Email and Password cannot be empty", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            val role = 0 // Superuser role
+            val result = dataBaseHelper.insertUser(signupEmail, signupPassword, role, signupEmail)
+            if (result > 0) {
+                Toast.makeText(this, "Superuser created successfully", Toast.LENGTH_LONG).show()
+                binding.signupPage.visibility = View.GONE
+                binding.loginPage.visibility = View.VISIBLE
+            } else {
+                Toast.makeText(this, "Error creating superuser", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
 

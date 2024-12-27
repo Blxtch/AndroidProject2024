@@ -4,7 +4,8 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import com.example.projetapplicationandroisromain2024.dataClass.DataClass
+import com.example.projetapplicationandroisromain2024.dataClass.DataClassItems
+import com.example.projetapplicationandroisromain2024.dataClass.DataClassUsers
 
 class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
@@ -34,7 +35,7 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 $COLUMN_USERNAME TEXT NOT NULL UNIQUE,
                 $COLUMN_PASSWORD TEXT NOT NULL,
                 $COLUMN_ROLE INTEGER NOT NULL,
-                $COLUMN_MAIL TEXT
+                $COLUMN_MAIL TEXT NOT NULL UNIQUE
             )"""
 
         db?.execSQL(createUsersTable)
@@ -58,6 +59,9 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         onCreate(db)
     }
 
+
+    /////// INSERT REQUEST //////
+
     fun insertUser(username: String, passwordHash: String, role: Int, mail: String?): Long {
         val db = writableDatabase
         val values = ContentValues().apply {
@@ -67,18 +71,6 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             put(COLUMN_MAIL, mail)
         }
         return db.insert(TABLE_USERS, null, values)
-    }
-
-    fun getUserRole(username: String): Int? {
-        val db = readableDatabase
-        val query = "SELECT $COLUMN_ROLE FROM $TABLE_USERS WHERE $COLUMN_USERNAME = ?"
-        val cursor = db.rawQuery(query, arrayOf(username))
-        var role: Int? = null
-        if (cursor.moveToFirst()) {
-            role = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ROLE))
-        }
-        cursor.close()
-        return role
     }
 
     fun insertItem(name: String, merchantLink: String?, isAvailable: Boolean, brand: String): Long {
@@ -92,6 +84,9 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return db.insert(TABLE_ITEMS, null, values)
     }
 
+
+    //////// BOOLEAN CHECK //////
+
     fun isSuperUserCreated(): Boolean {
         val db = readableDatabase
         val query = "SELECT COUNT(*) FROM $TABLE_USERS WHERE $COLUMN_ROLE = 0" // Vérification du rôle super-admin
@@ -104,20 +99,74 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return count > 0
     }
 
-    fun isUserValid(username: String, passwordHash: String): Boolean {
+    fun isUserValid(email: String, passwordHash: String): Boolean {
         val db = readableDatabase
-        val query = "SELECT 1 FROM $TABLE_USERS WHERE $COLUMN_USERNAME = ? AND $COLUMN_PASSWORD = ? LIMIT 1"
-        val cursor = db.rawQuery(query, arrayOf(username, passwordHash))
+        val query = "SELECT 1 FROM $TABLE_USERS WHERE $COLUMN_MAIL = ? AND $COLUMN_PASSWORD = ? LIMIT 1"
+        val cursor = db.rawQuery(query, arrayOf(email, passwordHash))
         val exists = cursor.moveToFirst()
         cursor.close()
         return exists
     }
 
-    fun getAllItems(): List<DataClass> {
+    fun isEmailTaken(email: String, excludeUserId: Int = -1): Boolean {
+        val db = this.readableDatabase
+        val query = if (excludeUserId == -1) {
+            "SELECT COUNT(*) FROM $TABLE_USERS WHERE $COLUMN_MAIL = ?"
+        } else {
+            "SELECT COUNT(*) FROM $TABLE_USERS WHERE $COLUMN_MAIL = ? AND $COLUMN_USER_ID != ?"
+        }
+        val args = if (excludeUserId == -1) arrayOf(email) else arrayOf(email, excludeUserId.toString())
+        val cursor = db.rawQuery(query, args)
+
+        var exists = false
+        if (cursor.moveToFirst()) {
+            exists = cursor.getInt(0) > 0
+        }
+        cursor.close()
+        db.close()
+        return exists
+    }
+
+
+    //////GET REQUEST //////
+
+    fun getUserRole(email: String): Int? {
+        val db = readableDatabase
+        val query = "SELECT $COLUMN_ROLE FROM $TABLE_USERS WHERE $COLUMN_USERNAME = ?"
+        val cursor = db.rawQuery(query, arrayOf(email))
+        var role: Int? = null
+        if (cursor.moveToFirst()) {
+            role = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ROLE))
+        }
+        cursor.close()
+        return role
+    }
+
+    fun getAllUsers(): List<DataClassUsers> {
+        val db = readableDatabase
+        val query = "SELECT * FROM $TABLE_USERS"
+        val cursor = db.rawQuery(query, null)
+        val users = mutableListOf<DataClassUsers>()
+
+        while (cursor.moveToNext()) {
+            val id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_USER_ID))
+            val username = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_USERNAME))
+            val email = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_MAIL))
+            val password = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PASSWORD))
+            val role = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ROLE))
+
+            users.add(DataClassUsers(id, username, email, password, role))
+        }
+
+        cursor.close()
+        return users
+    }
+
+    fun getAllItems(): List<DataClassItems> {
         val db = readableDatabase
         val query = "SELECT * FROM $TABLE_ITEMS"
         val cursor = db.rawQuery(query, null)
-        val items = mutableListOf<DataClass>()
+        val items = mutableListOf<DataClassItems>()
 
         while (cursor.moveToNext()) {
             val name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ITEM_TYPE))
@@ -127,12 +176,14 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             val uniqueId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ITEM_ID))
 
             // Créez un objet DataClass et ajoutez-le à la liste
-            items.add(DataClass(name, link, brand, isAvailable, uniqueId))
+            items.add(DataClassItems(name, link, brand, isAvailable, uniqueId))
         }
 
         cursor.close()
         return items
     }
+
+    ////// UPDATE REQUEST //////
 
     fun updateAvailabilityItem(itemId: Int, isAvailable: Boolean): Boolean {
         val db = writableDatabase
@@ -161,10 +212,34 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return db.update(TABLE_ITEMS, values, "$COLUMN_ITEM_ID = ?", arrayOf(itemId.toString()))
     }
 
+    fun updateUser(userId: Int, newUsername: String, newEmail: String, newPasswordHash: String, newRole: Int): Boolean {
+        val db = writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_PASSWORD, newPasswordHash)
+            put(COLUMN_USERNAME, newUsername)
+            put(COLUMN_MAIL, newEmail)
+            put(COLUMN_ROLE, newRole)
+        }
+        // Check the number of rows affected
+        val rowsAffected = db.update(TABLE_USERS, values, "$COLUMN_USER_ID = ?", arrayOf(userId.toString()))
+        return rowsAffected > 0
+    }
+
+
+    ///// DELETE REQUEST ////////
+
     fun deleteItem(itemId: Int): Boolean {
         val db = writableDatabase
         val rowsDeleted = db.delete("$TABLE_ITEMS", "$COLUMN_ITEM_ID = ?", arrayOf(itemId.toString()))
         db.close()
         return rowsDeleted > 0
+    }
+
+    fun deleteUser(username: String): Boolean {
+        val db = writableDatabase
+        val rowsDeleted = db.delete("$TABLE_USERS", "$COLUMN_USERNAME = ?", arrayOf(username.toString()))
+        db.close()
+        return rowsDeleted > 0
+
     }
 }

@@ -3,13 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_login"
+    android:orientation="vertical"
     >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:id="@+id/login_page">
 
         <ImageView
             android:layout_width="160dp"
@@ -20,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:hint="Username"
+            android:hint="Email"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
             android:textSize="25sp"
@@ -48,8 +50,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Login"
+            android:backgroundTint="@color/purple"
             android:textSize="25sp"
-            android:backgroundTint="#11AAFF"
+
             android:id="@+id/login_btn" />
 
         <TextView
@@ -57,6 +60,64 @@
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:text="Heh phone share center login" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:id="@+id/signup_page">
+
+        <ImageView
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:src="@drawable/login_icon" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:hint="Email"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            android:textSize="25sp"
+            android:padding="10dp"
+            android:paddingStart="20dp"
+            android:background="@drawable/text_zone_rectangle"
+            android:inputType="text"
+            android:id="@+id/SUEmailInput" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:paddingStart="20dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            android:textSize="25sp"
+            android:padding="10dp"
+            android:background="@drawable/text_zone_rectangle"
+            android:inputType="textPassword"
+            android:id="@+id/SUPasswordInput"
+            android:layout_marginBottom="10dp" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sign Up"
+
+            android:textSize="25sp"
+            android:backgroundTint="@color/purple"
+            android:id="@+id/sign_up_button" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:text="Welcome to heh share center please create the super user account" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

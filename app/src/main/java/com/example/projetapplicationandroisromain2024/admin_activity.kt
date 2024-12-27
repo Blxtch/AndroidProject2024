@@ -5,19 +5,29 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.projetapplicationandroisromain2024.databinding.ActivityAdminBinding
 import android.widget.ArrayAdapter
-import android.widget.Spinner
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.projetapplicationandroisromain2024.adapterClass.RecyclerViewDataAdapterClass
 import com.example.projetapplicationandroisromain2024.adapterClass.RecyclerViewUserAdapterClass
+import com.example.projetapplicationandroisromain2024.dataClass.DataClassItems
+import com.example.projetapplicationandroisromain2024.dataClass.DataClassUsers
 
 class admin_activity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAdminBinding
     private lateinit var dataBaseHelper: DataBaseHelper
+    private lateinit var dataList: ArrayList<DataClassUsers>
+    private lateinit var recyclerView: RecyclerViewUserAdapterClass
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAdminBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        dataList = ArrayList()
+        recyclerView = RecyclerViewUserAdapterClass(dataList)
+        binding.usersRecyclerView.layoutManager = LinearLayoutManager(this)
+        binding.usersRecyclerView.adapter = recyclerView
+
 
         // Initialize DataBaseHelper
         dataBaseHelper = DataBaseHelper(this)
@@ -29,8 +39,8 @@ class admin_activity : AppCompatActivity() {
         binding.roleSpinner.adapter = adapter
 
         // Set up the RecyclerView
-        val userList = getUsers()  // Get users from the database
-        val userAdapter = RecyclerViewUserAdapterClass.UserAdapter(userList)
+
+        val userAdapter = RecyclerViewUserAdapterClass(dataList)
         binding.usersRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.usersRecyclerView.adapter = userAdapter
 
@@ -45,7 +55,10 @@ class admin_activity : AppCompatActivity() {
             } else {
                 role = "2"
             }
-
+            if (password.count() < 4) {
+                Toast.makeText(this, "Password to small minimum 4 characters",Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             if (validateInputs(username, password, mail)) {
                 addUser(username, password, role.toInt(), mail)
             }
@@ -67,37 +80,35 @@ class admin_activity : AppCompatActivity() {
         val result = dataBaseHelper.insertUser(username, password, role, mail)
         if (result != -1L) {
             Toast.makeText(this, "User $username added successfully", Toast.LENGTH_SHORT).show()
-            updateUserList()  // Update the RecyclerView with the new user
+            onResume()
         } else {
             Toast.makeText(this, "Failed to add user (duplicate username?)", Toast.LENGTH_SHORT).show()
         }
     }
 
-    // Update the RecyclerView with the latest list of users
-    private fun updateUserList() {
-        val userList = getUsers()  // Get updated list of users
-        val userAdapter = RecyclerViewUserAdapterClass.UserAdapter(userList)
-        binding.usersRecyclerView.adapter = userAdapter
+    override fun onResume() {
+        super.onResume()
+        displayUsers()
     }
 
     // Get users from the database
-    private fun getUsers(): List<RecyclerViewUserAdapterClass.User> {
-        val users = mutableListOf<RecyclerViewUserAdapterClass.User>()
-        val db = dataBaseHelper.readableDatabase  // Access readable database
+    private fun displayUsers() {
+        val users = dataBaseHelper.getAllUsers()
+        dataList = ArrayList()
+        for (user in users) {
+            val id = user.id
+            val username = user.username
+            val role = user.role
+            val email = user.email
+            val password = user.password
 
-        val cursor = db.rawQuery("SELECT * FROM users", null)
-
-        if (cursor.moveToFirst()) {
-            do {
-                val username = cursor.getString(cursor.getColumnIndexOrThrow("username"))
-                val email = cursor.getString(cursor.getColumnIndexOrThrow("mail"))
-                val role = cursor.getInt(cursor.getColumnIndexOrThrow("role")).toString()  // Convert role to String
-                users.add(RecyclerViewUserAdapterClass.User(username, email, role))
-            } while (cursor.moveToNext())
+            dataList.add(DataClassUsers(id, username, email, password, role))
         }
-        cursor.close()
-        db.close()  // Don't forget to close the database when done
 
-        return users
+        recyclerView = RecyclerViewUserAdapterClass(dataList)
+        binding.usersRecyclerView.apply {
+            adapter = recyclerView
+            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this@admin_activity)
+        }
     }
 }

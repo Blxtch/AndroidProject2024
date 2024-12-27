@@ -57,7 +57,8 @@
             android:id="@+id/add_user_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="#11AAFF"
+
+            android:backgroundTint="@color/purple"
             android:text="Add User"
             android:textColor="#FFFFFF" />
 

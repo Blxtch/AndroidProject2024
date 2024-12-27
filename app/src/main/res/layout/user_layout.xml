@@ -77,28 +77,37 @@
             <!-- Spinner to choose role -->
             <Spinner
                 android:id="@+id/role_spinner"
-                android:layout_width="match_parent"
+                android:layout_width="129dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:spinnerMode="dropdown" />
 
             <!-- Edit Username -->
             <EditText
-                android:id="@+id/editTitle"
+                android:id="@+id/editName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Edit Title"
+                android:hint="Edit Name"
                 android:textColor="@color/black"
                 android:textSize="14sp" />
 
             <!-- Edit Link -->
             <EditText
-                android:id="@+id/editLink"
+                android:id="@+id/editEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Edit Link"
+                android:hint="Edit Email"
                 android:textColor="@color/black"
                 android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/editPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Edit password"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
 
             <!-- Buttons to save or delete user -->
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -116,6 +125,7 @@
 
                 <Button
                     android:id="@+id/saveButtonUsers"
+                    android:backgroundTint="@color/purple"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Save"

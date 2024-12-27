@@ -15,10 +15,10 @@ import android.widget.Spinner
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projetapplicationandroisromain2024.DataBaseHelper
 import com.example.projetapplicationandroisromain2024.R
-import com.example.projetapplicationandroisromain2024.dataClass.DataClass
+import com.example.projetapplicationandroisromain2024.dataClass.DataClassItems
 
 class RecyclerViewDataAdapterClass(
-    private val dataList: ArrayList<DataClass>,
+    private val dataList: ArrayList<DataClassItems>,
     private val isAdmin: Boolean,
     private val dbHelper: DataBaseHelper
 ) :
@@ -108,24 +108,37 @@ class RecyclerViewDataAdapterClass(
         }
 
         holder.saveButton.setOnClickListener {
-            val newTitle = holder.editTitle.text.toString()
-            val newLink = holder.editLink.text.toString()
+            val newTitle = holder.editTitle.text.toString().trim()
+            val newLink = holder.editLink.text.toString().trim()
             val newType = holder.spinnerType.selectedItem.toString()
 
-            val dbHelper = DataBaseHelper(holder.itemView.context)
+            // Validation: Ensure no empty fields
+            if (newTitle.isEmpty()) {
+                holder.editTitle.error = "Title cannot be empty"
+                return@setOnClickListener
+            }
+            if (newLink.isEmpty()) {
+                holder.editLink.error = "Link cannot be empty"
+                return@setOnClickListener
+            }
+
+            // Update the database and dataList
             dbHelper.updateItem(currentItem.dataId, newTitle, newLink, newType)
 
+            // Update the local data object
             currentItem.dataBrand = newTitle
             currentItem.dataLink = newLink
             currentItem.dataType = newType
+
+            // Notify the adapter about the change
             notifyItemChanged(position)
 
+            // Reset visibility after saving
             holder.editSection.visibility = View.GONE
             holder.rvBrand.visibility = View.VISIBLE
             holder.rvLink.visibility = View.VISIBLE
             holder.rvImage.visibility = View.VISIBLE
             holder.editButton.visibility = View.VISIBLE
-
         }
 
         holder.deleteButton.setOnClickListener {

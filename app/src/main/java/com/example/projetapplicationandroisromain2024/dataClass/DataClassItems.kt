@@ -1,6 +1,6 @@
 package com.example.projetapplicationandroisromain2024.dataClass
 
-data class DataClass(
+data class DataClassItems(
     var dataType: String,
     var dataLink: String,
     var dataBrand: String, // Description de l'élément
