@@ -3,12 +3,13 @@ package com.example.projetapplicationandroisromain2024
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.projetapplicationandroisromain2024.databinding.ActivityLoginBinding
 
 
-class login_activity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private lateinit var dataBaseHelper: DataBaseHelper
@@ -20,7 +21,12 @@ class login_activity : AppCompatActivity() {
 
         dataBaseHelper = DataBaseHelper(this)
 
-        // Check if super user exists, if not create one
+        val tvSignUpLink: TextView = findViewById(R.id.tvSignUpLink)
+        tvSignUpLink.setOnClickListener {
+            val intent = Intent(this, SignupActivity::class.java)
+            startActivity(intent)
+        }
+
         if (!dataBaseHelper.isSuperUserCreated()) {
             binding.signupPage.visibility = View.VISIBLE
             binding.loginPage.visibility = View.GONE
@@ -51,7 +57,7 @@ class login_activity : AppCompatActivity() {
                 Toast.makeText(this, "Email and Password cannot be empty", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            val role = 0 // Superuser role
+            val role = 0
             val result = dataBaseHelper.insertUser(signupEmail, signupPassword, role, signupEmail)
             if (result > 0) {
                 Toast.makeText(this, "Superuser created successfully", Toast.LENGTH_LONG).show()
@@ -62,8 +68,6 @@ class login_activity : AppCompatActivity() {
             }
         }
     }
-
-
 
     private fun login(username: String, password: String) {
         if (dataBaseHelper.isUserValid(username, password)) {

@@ -6,7 +6,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.projetapplicationandroisromain2024.databinding.ActivityAddMaterialBinding
 
-class addMaterialActivity : AppCompatActivity() {
+class AddMaterialActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAddMaterialBinding
     private lateinit var dataBaseHelper: DataBaseHelper
@@ -15,10 +15,8 @@ class addMaterialActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAddMaterialBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         dataBaseHelper = DataBaseHelper(this)
 
-        // Setup the Spinner
         val adapter = ArrayAdapter.createFromResource(
             this,
             R.array.items_types,
@@ -27,21 +25,26 @@ class addMaterialActivity : AppCompatActivity() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.typeSpinner.adapter = adapter
 
-        // Handle save button click
         binding.saveMaterialBtn.setOnClickListener {
             val brand = binding.materialNameInput.text.toString()
             val link = binding.materialLinkInput.text.toString()
-            val name = binding.typeSpinner.selectedItem.toString() // Get selected type
+            val name = binding.typeSpinner.selectedItem.toString()
+            val ref = binding.materialRefInput.text.toString()
 
             if (name.isEmpty()) {
                 Toast.makeText(this, "Material name is required", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            val result = dataBaseHelper.insertItem(name, link, true, brand)
+            if (dataBaseHelper.isRefAlreadyAttributed(ref)){
+                Toast.makeText(this,"Ref already attributed",Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val result = dataBaseHelper.insertItem(ref, name, link, true, brand)
             if (result != -1L) {
                 Toast.makeText(this, "Material added successfully", Toast.LENGTH_SHORT).show()
-                finish() // Close this activity after adding material
+                finish()
             } else {
                 Toast.makeText(this, "Failed to add material", Toast.LENGTH_SHORT).show()
             }

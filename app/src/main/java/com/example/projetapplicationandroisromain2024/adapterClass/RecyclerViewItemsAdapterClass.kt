@@ -1,6 +1,7 @@
 package com.example.projetapplicationandroisromain2024.adapterClass
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -12,17 +13,21 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.LinearLayout
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projetapplicationandroisromain2024.DataBaseHelper
 import com.example.projetapplicationandroisromain2024.R
 import com.example.projetapplicationandroisromain2024.dataClass.DataClassItems
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.qrcode.QRCodeWriter
 
-class RecyclerViewDataAdapterClass(
+class RecyclerViewItemsAdapterClass(
     private val dataList: ArrayList<DataClassItems>,
     private val isAdmin: Boolean,
     private val dbHelper: DataBaseHelper
 ) :
-    RecyclerView.Adapter<RecyclerViewDataAdapterClass.ViewHolderClass>() {
+    RecyclerView.Adapter<RecyclerViewItemsAdapterClass.ViewHolderClass>() {
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderClass {
         val itemView =
@@ -35,8 +40,7 @@ class RecyclerViewDataAdapterClass(
 
         holder.rvBrand.text = currentItem.dataBrand
         holder.rvLink.text = currentItem.dataLink
-        holder.rvItemId.text = "Identification number :"+ currentItem.dataId.toString()
-
+        holder.rvItemId.text = "Identification number : " + currentItem.dataRef
         val indicator = holder.rvAvailabilityIndicator
         if (currentItem.dataIsAvailable) {
             indicator.setBackgroundResource(R.drawable.circle_shape_green)
@@ -44,50 +48,46 @@ class RecyclerViewDataAdapterClass(
             indicator.setBackgroundResource(R.drawable.circle_shape_red)
         }
 
-        holder.rvLink.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW)
-            intent.data = Uri.parse(currentItem.dataLink)
-            holder.rvLink.context.startActivity(intent)
+        val qrWriter = QRCodeWriter()
+        try {
+            val bitMatrix = qrWriter.encode(currentItem.dataRef, BarcodeFormat.QR_CODE, 200, 200)
+            val width = bitMatrix.width
+            val height = bitMatrix.height
+            val bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
+            for (x in 0 until width) {
+                for (y in 0 until height) {
+                    bmp.setPixel(x, y, if (bitMatrix[x, y]) android.graphics.Color.BLACK else android.graphics.Color.WHITE)
+                }
+            }
+            holder.qrCodeImageView.setImageBitmap(bmp)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
 
-        // Handle item type and set appropriate icon
+        holder.rvLink.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW)
+            try {
+                intent.data = Uri.parse(currentItem.dataLink)
+                holder.rvLink.context.startActivity(intent)
+            }catch (e: Exception){
+                e.printStackTrace()
+            }
+        }
+
         if (currentItem.dataType == "Phone") {
             holder.rvImage.setImageResource(R.drawable.icon_phone)
         } else {
             holder.rvImage.setImageResource(R.drawable.tablet_icon)
         }
 
-        holder.loanButton.setOnClickListener {
-            val isNowAvailable = !currentItem.dataIsAvailable
-            val success = dbHelper.updateAvailabilityItem(currentItem.dataId, isNowAvailable)
-
-            if (success) {
-                // Update the item's availability locally
-                currentItem.dataIsAvailable = isNowAvailable
-                notifyItemChanged(position) // Refresh the view for this item
-            }
-        }
-
-
         holder.itemView.setOnClickListener {
             val hiddenSection = holder.hiddenSection
             if (hiddenSection.visibility == View.VISIBLE) {
-
                 hiddenSection.visibility = View.GONE
             } else {
-
                 hiddenSection.visibility = View.VISIBLE
             }
         }
-
-        val adapter = ArrayAdapter.createFromResource(
-            holder.itemView.context,
-            R.array.items_types,
-            android.R.layout.simple_spinner_item
-        )
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        holder.spinnerType.adapter = adapter
-
 
         if (isAdmin) {
             holder.editButton.visibility = View.VISIBLE
@@ -98,10 +98,17 @@ class RecyclerViewDataAdapterClass(
                 holder.rvImage.visibility = View.GONE
                 holder.editButton.visibility = View.GONE
 
-
+                holder.editRef.setText(currentItem.dataRef)
                 holder.editTitle.setText(currentItem.dataBrand)
                 holder.editLink.setText(currentItem.dataLink)
 
+                val adapter = ArrayAdapter.createFromResource(
+                    holder.itemView.context,
+                    R.array.items_types,
+                    android.R.layout.simple_spinner_item
+                )
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                holder.spinnerType.adapter = adapter
             }
         } else {
             holder.editButton.visibility = View.GONE
@@ -111,8 +118,12 @@ class RecyclerViewDataAdapterClass(
             val newTitle = holder.editTitle.text.toString().trim()
             val newLink = holder.editLink.text.toString().trim()
             val newType = holder.spinnerType.selectedItem.toString()
+            val newRef = holder.editRef.text.toString().trim()
 
-            // Validation: Ensure no empty fields
+            if (newRef.isEmpty()) {
+                holder.editRef.error = "Reference cannot be empty"
+                return@setOnClickListener
+            }
             if (newTitle.isEmpty()) {
                 holder.editTitle.error = "Title cannot be empty"
                 return@setOnClickListener
@@ -122,18 +133,20 @@ class RecyclerViewDataAdapterClass(
                 return@setOnClickListener
             }
 
-            // Update the database and dataList
-            dbHelper.updateItem(currentItem.dataId, newTitle, newLink, newType)
+            if (dbHelper.isRefAlreadyAttributed(newRef, currentItem.dataId)) {
+                holder.editRef.error = "This reference is already attributed to another item."
+                return@setOnClickListener
+            }
 
-            // Update the local data object
+            dbHelper.updateItem(currentItem.dataId, newRef, newTitle, newLink, newType)
+
+            currentItem.dataRef = newRef
             currentItem.dataBrand = newTitle
             currentItem.dataLink = newLink
             currentItem.dataType = newType
 
-            // Notify the adapter about the change
             notifyItemChanged(position)
 
-            // Reset visibility after saving
             holder.editSection.visibility = View.GONE
             holder.rvBrand.visibility = View.VISIBLE
             holder.rvLink.visibility = View.VISIBLE
@@ -145,9 +158,11 @@ class RecyclerViewDataAdapterClass(
             val dbHelper = DataBaseHelper(holder.itemView.context)
             dbHelper.deleteItem(currentItem.dataId)
             dataList.removeAt(position)
-            // Notify the adapter about the removal
             notifyItemRemoved(position)
-            notifyItemRangeChanged(position, dataList.size) // Adjust the indices for the remaining items
+            notifyItemRangeChanged(
+                position,
+                dataList.size
+            )
         }
     }
 
@@ -161,16 +176,17 @@ class RecyclerViewDataAdapterClass(
         val rvImage: ImageView = itemView.findViewById(R.id.image)
         val rvAvailabilityIndicator: View = itemView.findViewById(R.id.availability)
 
-        // Hidden section (unique ID and loan button)
         val hiddenSection: LinearLayout = itemView.findViewById(R.id.hiddenSection)
         val rvItemId: TextView = itemView.findViewById(R.id.itemId)
-        val loanButton: Button = itemView.findViewById(R.id.loanButton)
+
         val editButton: Button = itemView.findViewById(R.id.editButton)
         val editTitle: EditText = itemView.findViewById(R.id.editTitle)
         val editLink: EditText = itemView.findViewById(R.id.editLink)
-        val editSection: LinearLayout =itemView.findViewById(R.id.editSection)
+        val editSection: LinearLayout = itemView.findViewById(R.id.editSection)
         val saveButton: Button = itemView.findViewById(R.id.saveButton)
         val spinnerType: Spinner = itemView.findViewById(R.id.type_spinner)
         val deleteButton: Button = itemView.findViewById(R.id.deleteButton)
+        val qrCodeImageView: ImageView = itemView.findViewById(R.id.qrCodeImageView)
+        val editRef: EditText = itemView.findViewById(R.id.editRef)
     }
 }

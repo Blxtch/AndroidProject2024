@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.example.projetapplicationandroisromain2024.dataClass.DataClassItems
 import com.example.projetapplicationandroisromain2024.dataClass.DataClassUsers
+import kotlin.jvm.internal.Ref
 
 class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
@@ -22,6 +23,7 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
         private const val TABLE_ITEMS = "items"
         private const val COLUMN_ITEM_ID = "id"
+        private const val COLUMN_ITEM_REFERENCE= "ref"
         private const val COLUMN_ITEM_BRAND = "brand"
         private const val COLUMN_ITEM_TYPE = "name"
         private const val COLUMN_MERCHANT_LINK = "merchant_link"
@@ -43,6 +45,7 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val createMaterialsTable = """
             CREATE TABLE $TABLE_ITEMS (
                 $COLUMN_ITEM_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                $COLUMN_ITEM_REFERENCE STRING NOT NULL UNIQUE,
                 $COLUMN_ITEM_TYPE STRING NOT NULL,
                 $COLUMN_ITEM_BRAND TEXT NOT NULL,
                 $COLUMN_MERCHANT_LINK TEXT,
@@ -65,6 +68,7 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     fun insertUser(username: String, passwordHash: String, role: Int, mail: String?): Long {
         val db = writableDatabase
         val values = ContentValues().apply {
+
             put(COLUMN_USERNAME, username)
             put(COLUMN_PASSWORD, passwordHash)
             put(COLUMN_ROLE, role)
@@ -73,9 +77,10 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return db.insert(TABLE_USERS, null, values)
     }
 
-    fun insertItem(name: String, merchantLink: String?, isAvailable: Boolean, brand: String): Long {
+    fun insertItem(ref: String, name: String, merchantLink: String?, isAvailable: Boolean, brand: String): Long {
         val db = writableDatabase
         val values = ContentValues().apply {
+            put(COLUMN_ITEM_REFERENCE, ref)
             put(COLUMN_ITEM_TYPE, name)
             put(COLUMN_MERCHANT_LINK, merchantLink)
             put(COLUMN_IS_ITEM_AVAILABLE, if (isAvailable) 1 else 0)
@@ -86,6 +91,28 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
 
     //////// BOOLEAN CHECK //////
+
+    fun isRefAlreadyAttributed(ref: String, excludeId: Int? = null): Boolean {
+        val db = this.readableDatabase
+        val query = if (excludeId == null) {
+            "SELECT COUNT(*) FROM $TABLE_ITEMS WHERE $COLUMN_ITEM_REFERENCE = ?"
+        } else {
+            "SELECT COUNT(*) FROM $TABLE_ITEMS WHERE $COLUMN_ITEM_REFERENCE = ? AND $COLUMN_ITEM_ID != ?"
+        }
+        val args = if (excludeId == null) {
+            arrayOf(ref)
+        } else {
+            arrayOf(ref, excludeId.toString())
+        }
+
+        val cursor = db.rawQuery(query, args)
+        var exists = false
+        if (cursor.moveToFirst()) {
+            exists = cursor.getInt(0) > 0
+        }
+        cursor.close()
+        return exists
+    }
 
     fun isSuperUserCreated(): Boolean {
         val db = readableDatabase
@@ -169,6 +196,7 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val items = mutableListOf<DataClassItems>()
 
         while (cursor.moveToNext()) {
+            val ref = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ITEM_REFERENCE))
             val name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ITEM_TYPE))
             val link = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_MERCHANT_LINK))
             val brand = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ITEM_BRAND))
@@ -176,7 +204,7 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             val uniqueId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ITEM_ID))
 
             // Créez un objet DataClass et ajoutez-le à la liste
-            items.add(DataClassItems(name, link, brand, isAvailable, uniqueId))
+            items.add(DataClassItems(ref, name, link, brand, isAvailable, uniqueId))
         }
 
         cursor.close()
@@ -185,26 +213,20 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     ////// UPDATE REQUEST //////
 
-    fun updateAvailabilityItem(itemId: Int, isAvailable: Boolean): Boolean {
+    fun updateAvailabilityItem(itemRef: String, valueAvailability: Int): Int {
         val db = writableDatabase
-        val contentValues = ContentValues().apply {
-            put(COLUMN_IS_ITEM_AVAILABLE, if (isAvailable) 1 else 0)
+
+        val values = ContentValues().apply {
+            put(COLUMN_IS_ITEM_AVAILABLE,valueAvailability)
         }
 
-        val result = db.update(
-            TABLE_ITEMS,
-            contentValues,
-            "$COLUMN_ITEM_ID = ?",
-            arrayOf(itemId.toString())
-        )
-
-        db.close()
-        return result > 0
+        return db.update(TABLE_ITEMS, values, "$COLUMN_ITEM_REFERENCE = ?", arrayOf(itemRef))
     }
 
-    fun updateItem(itemId: Int, newBrand: String, newLink: String, newType: String): Int {
+    fun updateItem(itemId: Int,newRef: String, newBrand: String, newLink: String, newType: String): Int {
         val db = writableDatabase
         val values = ContentValues().apply {
+            put(COLUMN_ITEM_REFERENCE,newRef)
             put(COLUMN_ITEM_TYPE, newType)
             put(COLUMN_ITEM_BRAND, newBrand)
             put(COLUMN_MERCHANT_LINK, newLink)
@@ -235,9 +257,9 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return rowsDeleted > 0
     }
 
-    fun deleteUser(username: String): Boolean {
+    fun deleteUser(id: Int): Boolean {
         val db = writableDatabase
-        val rowsDeleted = db.delete("$TABLE_USERS", "$COLUMN_USERNAME = ?", arrayOf(username.toString()))
+        val rowsDeleted = db.delete("$TABLE_USERS", "$COLUMN_USER_ID = ?", arrayOf(id.toString()))
         db.close()
         return rowsDeleted > 0
 

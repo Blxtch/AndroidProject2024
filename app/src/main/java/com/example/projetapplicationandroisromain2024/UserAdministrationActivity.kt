@@ -6,12 +6,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.projetapplicationandroisromain2024.databinding.ActivityAdminBinding
 import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.projetapplicationandroisromain2024.adapterClass.RecyclerViewDataAdapterClass
 import com.example.projetapplicationandroisromain2024.adapterClass.RecyclerViewUserAdapterClass
-import com.example.projetapplicationandroisromain2024.dataClass.DataClassItems
 import com.example.projetapplicationandroisromain2024.dataClass.DataClassUsers
 
-class admin_activity : AppCompatActivity() {
+class UserAdministrationActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAdminBinding
     private lateinit var dataBaseHelper: DataBaseHelper
@@ -22,29 +20,21 @@ class admin_activity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAdminBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         dataList = ArrayList()
         recyclerView = RecyclerViewUserAdapterClass(dataList)
         binding.usersRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.usersRecyclerView.adapter = recyclerView
-
-
-        // Initialize DataBaseHelper
         dataBaseHelper = DataBaseHelper(this)
 
-        // Set up the role spinner
         val roleChoices = resources.getStringArray(R.array.role_choices)
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, roleChoices)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.roleSpinner.adapter = adapter
 
-        // Set up the RecyclerView
-
         val userAdapter = RecyclerViewUserAdapterClass(dataList)
         binding.usersRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.usersRecyclerView.adapter = userAdapter
 
-        // Button click listener for adding a new user
         binding.addUserBtn.setOnClickListener {
             val username = binding.usernameInput.text.toString()
             val password = binding.passwordInput.text.toString()
@@ -65,7 +55,6 @@ class admin_activity : AppCompatActivity() {
         }
     }
 
-    // Validate input fields
     private fun validateInputs(username: String, password: String, mail: String): Boolean {
         return if (username.isEmpty() || password.isEmpty() || mail.isEmpty()) {
             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
@@ -75,7 +64,6 @@ class admin_activity : AppCompatActivity() {
         }
     }
 
-    // Add a user to the database
     private fun addUser(username: String, password: String, role: Int, mail: String) {
         val result = dataBaseHelper.insertUser(username, password, role, mail)
         if (result != -1L) {
@@ -91,7 +79,6 @@ class admin_activity : AppCompatActivity() {
         displayUsers()
     }
 
-    // Get users from the database
     private fun displayUsers() {
         val users = dataBaseHelper.getAllUsers()
         dataList = ArrayList()
@@ -108,7 +95,7 @@ class admin_activity : AppCompatActivity() {
         recyclerView = RecyclerViewUserAdapterClass(dataList)
         binding.usersRecyclerView.apply {
             adapter = recyclerView
-            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this@admin_activity)
+            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this@UserAdministrationActivity)
         }
     }
 }

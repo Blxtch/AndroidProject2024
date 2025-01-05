@@ -22,10 +22,10 @@ class RecyclerViewUserAdapterClass(
 
 ):
     RecyclerView.Adapter<RecyclerViewUserAdapterClass.UserViewHolder>()  {
-    // Adapter for the RecyclerView
 
 
-        // ViewHolder to bind the views for each user
+
+
         class UserViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             val usernameTextView: TextView = view.findViewById(R.id.name)
             val emailTextView: TextView = view.findViewById(R.id.email)
@@ -43,17 +43,15 @@ class RecyclerViewUserAdapterClass(
             val image: ImageView = view.findViewById(R.id.image)
         }
 
-        // Create new views (invoked by the layout manager)
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.user_layout, parent, false)
             return UserViewHolder(view)
         }
 
-        // Replace the contents of a view (invoked by the layout manager)
         override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
             val user = userList[position]
             val dbHelper = DataBaseHelper(holder.itemView.context)
-            // Display current user details
+
             holder.usernameTextView.text = user.username
             holder.emailTextView.text = user.email
             when (user.role) {
@@ -62,25 +60,13 @@ class RecyclerViewUserAdapterClass(
                 else -> holder.roleTextView.text = "Admin"
             }
 
-            // Hide controls for Super User
             if (user.role == 0) {
                 holder.deleteButtonUsers.visibility = View.GONE
                 holder.spinnerRole.visibility = View.GONE
             }
 
-            // Setup Spinner Adapter
-            val adapter = ArrayAdapter.createFromResource(
-                holder.itemView.context,
-                R.array.role_choices,
-                android.R.layout.simple_spinner_item
-            )
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            holder.spinnerRole.adapter = adapter
-
-            // Set current role as spinner selection
             holder.spinnerRole.setSelection(user.role - 1)
 
-            // Show edit section when edit button is clicked
             holder.editButtonUsers.setOnClickListener {
                 holder.editSectionUsers.visibility = View.VISIBLE
                 holder.roleTextView.visibility = View.GONE
@@ -91,6 +77,14 @@ class RecyclerViewUserAdapterClass(
                 holder.editName.setText(user.username)
                 holder.editMail.setText(user.email)
                 holder.editPassword.setText((user.password))
+
+                val adapter = ArrayAdapter.createFromResource(
+                    holder.itemView.context,
+                    R.array.role_choices,
+                    android.R.layout.simple_spinner_item
+                )
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                holder.spinnerRole.adapter = adapter
             }
 
             holder.saveButtonUsers.setOnClickListener {
@@ -99,7 +93,6 @@ class RecyclerViewUserAdapterClass(
                 val newPassword = holder.editPassword.text.toString().ifEmpty { user.password }
                 val newRole = holder.spinnerRole.selectedItemPosition
 
-                // Validate inputs
                 if (newUsername.isEmpty()) {
                     holder.editName.error = "Username cannot be empty"
                     return@setOnClickListener
@@ -122,22 +115,19 @@ class RecyclerViewUserAdapterClass(
                     return@setOnClickListener
                 }
 
-                // Update in database
                 val isUpdated = dbHelper.updateUser(user.id, newUsername, newMail, newPassword, newRole + 1)
 
                 if (isUpdated) {
-                    // Update local data
                     user.username = newUsername
                     user.email = newMail
                     user.role = newRole + 1
                     user.password = newPassword
 
-                    notifyItemChanged(position) // Ensure the view is refreshed
+                    notifyItemChanged(position)
                 } else {
                     Toast.makeText(holder.itemView.context, "Update failed", Toast.LENGTH_SHORT).show()
                 }
 
-                // Hide edit section
                 holder.editSectionUsers.visibility = View.GONE
                 holder.roleTextView.visibility = View.VISIBLE
                 holder.usernameTextView.visibility = View.VISIBLE
@@ -145,20 +135,15 @@ class RecyclerViewUserAdapterClass(
                 holder.image.visibility = View.VISIBLE
                 holder.editButtonUsers.visibility = View.VISIBLE
             }
-            // Delete user
+
             holder.deleteButtonUsers.setOnClickListener {
-
-                dbHelper.deleteUser(user.username)
-                //delete by id please romain
+                dbHelper.deleteUser(user.id)
                 userList.removeAt(position)
-
-                // Notify adapter about item removal
                 notifyItemRemoved(position)
                 notifyItemRangeChanged(position, userList.size)
             }
         }
 
-        // Return the size of the dataset (invoked by the layout manager)
         override fun getItemCount(): Int {
             return userList.size
         }

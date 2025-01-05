@@ -16,7 +16,9 @@
         android:theme="@style/Theme.ProjetApplicationAndroisRomain2024"
         tools:targetApi="31">
 
-        <activity android:name=".login_activity"
+        <activity android:name=".QrCodeScannerActivity" />
+
+        <activity android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -24,10 +26,12 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".addMaterialActivity"
+        <activity android:name=".AddMaterialActivity"
             android:exported="false"/>
-        <activity android:name=".admin_activity"
+        <activity android:name=".UserAdministrationActivity"
             android:exported="false" />
+        <activity android:name=".SignupActivity"
+            android:exported="false"/>
         <activity
             android:name=".MainActivity"
             android:exported="false"

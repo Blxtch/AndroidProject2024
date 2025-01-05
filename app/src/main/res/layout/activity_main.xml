@@ -8,6 +8,14 @@
     android:background="@drawable/background_login"
     tools:context=".MainActivity">
 
+    <Button
+        android:id="@+id/logoutButton"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/disconnect_icon"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/black" />
+
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
@@ -27,6 +35,16 @@
             android:backgroundTint="@color/purple"
             android:textSize="20dp"
             android:visibility="gone" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/zxing_barcode_scanner"
+            android:text="Scan"
+            android:backgroundTint="@color/purple"
+            android:layout_marginTop="16dp"
+            android:textSize="20dp"
+            />
 
         <!-- Add Material Button (Admin Only) -->
         <Button
