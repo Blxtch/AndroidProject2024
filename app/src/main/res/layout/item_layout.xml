@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="merchantLink"
-            android:textColor="@android:color/holo_blue_light"
+            android:textColor="@color/indigo"
             android:textSize="16sp"
             app:layout_constraintStart_toEndOf="@id/image"
             app:layout_constraintTop_toBottomOf="@id/title" />
@@ -60,7 +60,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Collapsing Section -->
         <LinearLayout
             android:visibility="gone"
             android:id="@+id/hiddenSection"
@@ -110,7 +109,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:spinnerMode="dropdown" />
+                android:spinnerMode="dropdown"
+                android:backgroundTint="@color/indigo"/>
 
             <EditText
                 android:id="@+id/editRef"
@@ -141,12 +141,12 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <Button
+                <ImageButton
                     android:id="@+id/deleteButton"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:background="@drawable/icon_delete"
-                    android:backgroundTint="@color/purple"
+                    android:backgroundTint="@color/Blue"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
@@ -158,7 +158,7 @@
                     android:layout_gravity="end"
                     android:layout_marginTop="8dp"
                     android:text="Save"
-                    android:backgroundTint="@color/purple"
+                    android:backgroundTint="@color/Blue"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -166,9 +166,9 @@
 
         </LinearLayout>
 
-        <Button
+        <ImageButton
             android:id="@+id/editButton"
-            android:backgroundTint="@color/purple"
+            android:backgroundTint="@color/indigo"
             android:layout_width="35dp"
             android:layout_height="37dp"
             android:layout_marginTop="20dp"

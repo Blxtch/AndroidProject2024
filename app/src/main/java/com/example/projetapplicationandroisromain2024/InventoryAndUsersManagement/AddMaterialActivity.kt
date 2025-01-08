@@ -1,9 +1,11 @@
-package com.example.projetapplicationandroisromain2024
+package com.example.projetapplicationandroisromain2024.InventoryAndUsersManagement
 
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.projetapplicationandroisromain2024.DataBaseHelper
+import com.example.projetapplicationandroisromain2024.R
 import com.example.projetapplicationandroisromain2024.databinding.ActivityAddMaterialBinding
 
 class AddMaterialActivity : AppCompatActivity() {

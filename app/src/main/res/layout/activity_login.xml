@@ -55,7 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Login"
-            android:backgroundTint="@color/purple"
+            android:backgroundTint="@color/Blue"
             android:textSize="25sp"
 
             android:id="@+id/login_btn" />
@@ -65,7 +65,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Don't have an account? Sign up here!"
-            android:textColor="@color/purple"
+            android:textColor="@color/indigo"
             android:textSize="16sp"
             android:clickable="true"
             android:focusable="true" />
@@ -129,7 +129,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:backgroundTint="@color/purple"
+            android:backgroundTint="@color/Blue"
             android:text="Sign Up"
             android:textSize="25sp" />
 

@@ -14,7 +14,6 @@
         android:layout_height="match_parent"
         android:padding="10dp">
 
-        <!-- User Image -->
         <ImageView
             android:id="@+id/image"
             android:layout_width="60dp"
@@ -28,7 +27,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintVertical_bias="0.0" />
 
-        <!-- Username -->
         <TextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
@@ -42,7 +40,6 @@
             app:layout_constraintBottom_toTopOf="@id/email"
             app:layout_constraintVertical_chainStyle="packed" />
 
-        <!-- Email -->
         <TextView
             android:id="@+id/email"
             android:layout_width="wrap_content"
@@ -53,7 +50,6 @@
             app:layout_constraintStart_toEndOf="@id/image"
             app:layout_constraintTop_toBottomOf="@id/name" />
 
-        <!-- Role -->
         <TextView
             android:id="@+id/role"
             android:layout_width="wrap_content"
@@ -63,7 +59,6 @@
             app:layout_constraintTop_toBottomOf="@id/email"
             app:layout_constraintStart_toStartOf="@id/email" />
 
-        <!-- Edit Section (Initially hidden) -->
         <LinearLayout
             android:id="@+id/editSectionUsers"
             android:layout_width="0dp"
@@ -74,7 +69,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <!-- Spinner to choose role -->
             <Spinner
                 android:id="@+id/role_spinner"
                 android:layout_width="129dp"
@@ -82,7 +76,6 @@
                 android:layout_marginBottom="16dp"
                 android:spinnerMode="dropdown" />
 
-            <!-- Edit Username -->
             <EditText
                 android:id="@+id/editName"
                 android:layout_width="match_parent"
@@ -91,7 +84,6 @@
                 android:textColor="@color/black"
                 android:textSize="14sp" />
 
-            <!-- Edit Link -->
             <EditText
                 android:id="@+id/editEmail"
                 android:layout_width="match_parent"
@@ -108,24 +100,23 @@
                 android:textColor="@color/black"
                 android:textSize="14sp" />
 
-
-            <!-- Buttons to save or delete user -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <Button
+                <ImageButton
                     android:id="@+id/deleteButtonUsers"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:background="@drawable/icon_delete"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:backgroundTint="@color/Blue"/>
 
                 <Button
                     android:id="@+id/saveButtonUsers"
-                    android:backgroundTint="@color/purple"
+                    android:backgroundTint="@color/Blue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Save"
@@ -137,8 +128,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
 
-        <!-- Edit Button (Floating action button) -->
-        <Button
+        <ImageButton
             android:id="@+id/editButtonUsers"
             android:layout_width="35dp"
             android:layout_height="37dp"
@@ -146,7 +136,8 @@
             android:layout_marginEnd="4dp"
             android:background="@drawable/edit_badge"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:backgroundTint="@color/Blue"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

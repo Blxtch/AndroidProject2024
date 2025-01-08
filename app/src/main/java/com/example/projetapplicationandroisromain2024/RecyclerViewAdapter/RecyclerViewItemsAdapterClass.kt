@@ -1,4 +1,4 @@
-package com.example.projetapplicationandroisromain2024.adapterClass
+package com.example.projetapplicationandroisromain2024.RecyclerViewAdapter
 
 import android.content.Intent
 import android.graphics.Bitmap
@@ -9,15 +9,15 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.LinearLayout
 import android.widget.Spinner
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projetapplicationandroisromain2024.DataBaseHelper
 import com.example.projetapplicationandroisromain2024.R
-import com.example.projetapplicationandroisromain2024.dataClass.DataClassItems
+import com.example.projetapplicationandroisromain2024.DataClasses.DataClassItems
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
 
@@ -75,7 +75,7 @@ class RecyclerViewItemsAdapterClass(
         }
 
         if (currentItem.dataType == "Phone") {
-            holder.rvImage.setImageResource(R.drawable.icon_phone)
+            holder.rvImage.setImageResource(R.drawable.phone_icon)
         } else {
             holder.rvImage.setImageResource(R.drawable.tablet_icon)
         }
@@ -179,13 +179,13 @@ class RecyclerViewItemsAdapterClass(
         val hiddenSection: LinearLayout = itemView.findViewById(R.id.hiddenSection)
         val rvItemId: TextView = itemView.findViewById(R.id.itemId)
 
-        val editButton: Button = itemView.findViewById(R.id.editButton)
+        val editButton: ImageButton = itemView.findViewById(R.id.editButton)
         val editTitle: EditText = itemView.findViewById(R.id.editTitle)
         val editLink: EditText = itemView.findViewById(R.id.editLink)
         val editSection: LinearLayout = itemView.findViewById(R.id.editSection)
         val saveButton: Button = itemView.findViewById(R.id.saveButton)
         val spinnerType: Spinner = itemView.findViewById(R.id.type_spinner)
-        val deleteButton: Button = itemView.findViewById(R.id.deleteButton)
+        val deleteButton: ImageButton = itemView.findViewById(R.id.deleteButton)
         val qrCodeImageView: ImageView = itemView.findViewById(R.id.qrCodeImageView)
         val editRef: EditText = itemView.findViewById(R.id.editRef)
     }

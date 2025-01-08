@@ -1,4 +1,4 @@
-package com.example.projetapplicationandroisromain2024.dataClass
+package com.example.projetapplicationandroisromain2024.DataClasses
 
 data class DataClassUsers(
     val id : Int,

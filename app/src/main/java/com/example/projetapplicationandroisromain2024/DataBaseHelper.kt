@@ -4,9 +4,8 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import com.example.projetapplicationandroisromain2024.dataClass.DataClassItems
-import com.example.projetapplicationandroisromain2024.dataClass.DataClassUsers
-import kotlin.jvm.internal.Ref
+import com.example.projetapplicationandroisromain2024.DataClasses.DataClassItems
+import com.example.projetapplicationandroisromain2024.DataClasses.DataClassUsers
 
 class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
@@ -203,7 +202,7 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             val isAvailable = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_IS_ITEM_AVAILABLE)) == 1
             val uniqueId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ITEM_ID))
 
-            // Créez un objet DataClass et ajoutez-le à la liste
+
             items.add(DataClassItems(ref, name, link, brand, isAvailable, uniqueId))
         }
 

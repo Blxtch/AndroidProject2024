@@ -32,21 +32,24 @@
             android:id="@+id/materialLinkInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Merchant Link (optional)" />
+            android:hint="Merchant Link (optional)"
+            />
 
         <Spinner
             android:id="@+id/type_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:spinnerMode="dropdown" />
+            android:spinnerMode="dropdown"
+            android:backgroundTint="@color/indigo"
+            />
 
         <Button
             android:id="@+id/saveMaterialBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:backgroundTint="@color/purple"
+            android:backgroundTint="@color/Blue"
             android:text="Save Material" />
     </LinearLayout>
 

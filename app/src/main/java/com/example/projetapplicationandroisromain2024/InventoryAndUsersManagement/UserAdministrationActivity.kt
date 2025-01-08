@@ -1,24 +1,26 @@
-package com.example.projetapplicationandroisromain2024
+package com.example.projetapplicationandroisromain2024.InventoryAndUsersManagement
 
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.projetapplicationandroisromain2024.databinding.ActivityAdminBinding
+import com.example.projetapplicationandroisromain2024.databinding.ActivityUserAdministrationBinding
 import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.projetapplicationandroisromain2024.adapterClass.RecyclerViewUserAdapterClass
-import com.example.projetapplicationandroisromain2024.dataClass.DataClassUsers
+import com.example.projetapplicationandroisromain2024.DataBaseHelper
+import com.example.projetapplicationandroisromain2024.RecyclerViewAdapter.RecyclerViewUserAdapterClass
+import com.example.projetapplicationandroisromain2024.DataClasses.DataClassUsers
+import com.example.projetapplicationandroisromain2024.R
 
 class UserAdministrationActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityAdminBinding
+    private lateinit var binding: ActivityUserAdministrationBinding
     private lateinit var dataBaseHelper: DataBaseHelper
     private lateinit var dataList: ArrayList<DataClassUsers>
     private lateinit var recyclerView: RecyclerViewUserAdapterClass
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityAdminBinding.inflate(layoutInflater)
+        binding = ActivityUserAdministrationBinding.inflate(layoutInflater)
         setContentView(binding.root)
         dataList = ArrayList()
         recyclerView = RecyclerViewUserAdapterClass(dataList)

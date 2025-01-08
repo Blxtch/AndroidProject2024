@@ -18,7 +18,7 @@
 
         <activity android:name=".QrCodeScannerActivity" />
 
-        <activity android:name=".LoginActivity"
+        <activity android:name=".Authentification.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -26,11 +26,11 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".AddMaterialActivity"
+        <activity android:name=".InventoryAndUsersManagement.AddMaterialActivity"
             android:exported="false"/>
-        <activity android:name=".UserAdministrationActivity"
+        <activity android:name=".InventoryAndUsersManagement.UserAdministrationActivity"
             android:exported="false" />
-        <activity android:name=".SignupActivity"
+        <activity android:name=".Authentification.SignupActivity"
             android:exported="false"/>
         <activity
             android:name=".MainActivity"

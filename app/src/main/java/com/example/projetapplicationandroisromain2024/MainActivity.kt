@@ -5,8 +5,11 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.example.projetapplicationandroisromain2024.adapterClass.RecyclerViewItemsAdapterClass
-import com.example.projetapplicationandroisromain2024.dataClass.DataClassItems
+import com.example.projetapplicationandroisromain2024.Authentification.LoginActivity
+import com.example.projetapplicationandroisromain2024.InventoryAndUsersManagement.AddMaterialActivity
+import com.example.projetapplicationandroisromain2024.RecyclerViewAdapter.RecyclerViewItemsAdapterClass
+import com.example.projetapplicationandroisromain2024.DataClasses.DataClassItems
+import com.example.projetapplicationandroisromain2024.InventoryAndUsersManagement.UserAdministrationActivity
 import com.example.projetapplicationandroisromain2024.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {

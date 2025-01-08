@@ -1,12 +1,12 @@
-package com.example.projetapplicationandroisromain2024.adapterClass
+package com.example.projetapplicationandroisromain2024.RecyclerViewAdapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Spinner
@@ -15,33 +15,13 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projetapplicationandroisromain2024.DataBaseHelper
 import com.example.projetapplicationandroisromain2024.R
-import com.example.projetapplicationandroisromain2024.dataClass.DataClassUsers
+import com.example.projetapplicationandroisromain2024.DataClasses.DataClassUsers
 
 class RecyclerViewUserAdapterClass(
     private val userList: ArrayList<DataClassUsers>
 
 ):
     RecyclerView.Adapter<RecyclerViewUserAdapterClass.UserViewHolder>()  {
-
-
-
-
-        class UserViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            val usernameTextView: TextView = view.findViewById(R.id.name)
-            val emailTextView: TextView = view.findViewById(R.id.email)
-            val roleTextView: TextView = view.findViewById(R.id.role)
-
-            val saveButtonUsers: Button = view.findViewById(R.id.saveButtonUsers)
-            val deleteButtonUsers: Button = view.findViewById(R.id.deleteButtonUsers)
-            val editSectionUsers : LinearLayout = view.findViewById(R.id.editSectionUsers)
-            val editButtonUsers : Button = view.findViewById((R.id.editButtonUsers))
-            val spinnerRole: Spinner = view.findViewById((R.id.role_spinner))
-
-            val editName: EditText = view.findViewById(R.id.editName)
-            val editMail: EditText = view.findViewById(R.id.editEmail)
-            val editPassword: EditText = view.findViewById(R.id.editPassword)
-            val image: ImageView = view.findViewById(R.id.image)
-        }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.user_layout, parent, false)
@@ -147,5 +127,22 @@ class RecyclerViewUserAdapterClass(
         override fun getItemCount(): Int {
             return userList.size
         }
+
+    class UserViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val usernameTextView: TextView = view.findViewById(R.id.name)
+        val emailTextView: TextView = view.findViewById(R.id.email)
+        val roleTextView: TextView = view.findViewById(R.id.role)
+
+        val saveButtonUsers: Button = view.findViewById(R.id.saveButtonUsers)
+        val deleteButtonUsers: ImageButton = view.findViewById(R.id.deleteButtonUsers)
+        val editSectionUsers : LinearLayout = view.findViewById(R.id.editSectionUsers)
+        val editButtonUsers : ImageButton = view.findViewById((R.id.editButtonUsers))
+        val spinnerRole: Spinner = view.findViewById((R.id.role_spinner))
+
+        val editName: EditText = view.findViewById(R.id.editName)
+        val editMail: EditText = view.findViewById(R.id.editEmail)
+        val editPassword: EditText = view.findViewById(R.id.editPassword)
+        val image: ImageView = view.findViewById(R.id.image)
+    }
 
 }
