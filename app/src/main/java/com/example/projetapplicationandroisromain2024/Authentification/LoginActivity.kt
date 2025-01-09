@@ -52,12 +52,12 @@ class LoginActivity : AppCompatActivity() {
             val signupPassword = binding.SUPasswordInput.text.toString()
 
             if (signupPassword.count() < 4) {
-                Toast.makeText(this,"Password is too short must have a minimum of 4 characters", Toast.LENGTH_SHORT).show()
+                binding.SUPasswordInput.error = "Password is too short must have a minimum of 4 characters"
                 return@setOnClickListener
             }
 
             if (signupEmail.isBlank() || signupPassword.isBlank()) {
-                Toast.makeText(this, "Email and Password cannot be empty", Toast.LENGTH_SHORT).show()
+                binding.signUpButton.error = "Email and Password cannot be empty"
                 return@setOnClickListener
             }
             val role = 0
@@ -79,7 +79,7 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         } else {
-            Toast.makeText(this, "Invalid username or password", Toast.LENGTH_SHORT).show()
+            binding.loginBtn.error = "Invalid username or password"
         }
     }
 }

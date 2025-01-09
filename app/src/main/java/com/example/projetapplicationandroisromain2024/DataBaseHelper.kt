@@ -241,7 +241,6 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             put(COLUMN_MAIL, newEmail)
             put(COLUMN_ROLE, newRole)
         }
-        // Check the number of rows affected
         val rowsAffected = db.update(TABLE_USERS, values, "$COLUMN_USER_ID = ?", arrayOf(userId.toString()))
         return rowsAffected > 0
     }

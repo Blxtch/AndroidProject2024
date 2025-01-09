@@ -46,7 +46,6 @@ class MainActivity : AppCompatActivity() {
         isSuperUser = loggedInUser?.let { dataBaseHelper.getUserRole(it) == 0 } ?: false
 
         if (isAdmin) {
-            Log.d("amdin", "admin")
             binding.addMaterialBtn.visibility = View.VISIBLE
             binding.addMaterialBtn.setOnClickListener {
                 val intent = Intent(this, AddMaterialActivity::class.java)
@@ -54,7 +53,6 @@ class MainActivity : AppCompatActivity() {
             }
 
             if(isSuperUser) {
-                Log.d("SUperUser", "SUperUser")
                 binding.addUserBtn.visibility = View.VISIBLE
                 binding.addUserBtn.setOnClickListener {
                     val intent = Intent(this, UserAdministrationActivity::class.java)

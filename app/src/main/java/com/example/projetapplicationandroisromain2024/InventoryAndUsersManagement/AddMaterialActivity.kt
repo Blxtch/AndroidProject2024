@@ -34,12 +34,12 @@ class AddMaterialActivity : AppCompatActivity() {
             val ref = binding.materialRefInput.text.toString()
 
             if (name.isEmpty()) {
-                Toast.makeText(this, "Material name is required", Toast.LENGTH_SHORT).show()
+                binding.materialNameInput.error = "Material name is required"
                 return@setOnClickListener
             }
 
             if (dataBaseHelper.isRefAlreadyAttributed(ref)){
-                Toast.makeText(this,"Ref already attributed",Toast.LENGTH_SHORT).show()
+                binding.materialRefInput.error = "Ref already attributed"
                 return@setOnClickListener
             }
 

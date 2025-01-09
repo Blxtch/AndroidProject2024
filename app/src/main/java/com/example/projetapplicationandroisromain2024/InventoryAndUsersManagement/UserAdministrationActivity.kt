@@ -48,7 +48,7 @@ class UserAdministrationActivity : AppCompatActivity() {
                 role = "2"
             }
             if (password.count() < 4) {
-                Toast.makeText(this, "Password to small minimum 4 characters",Toast.LENGTH_SHORT).show()
+                binding.passwordInput.error = "Password to small minimum 4 characters"
                 return@setOnClickListener
             }
             if (validateInputs(username, password, mail)) {
@@ -59,7 +59,7 @@ class UserAdministrationActivity : AppCompatActivity() {
 
     private fun validateInputs(username: String, password: String, mail: String): Boolean {
         return if (username.isEmpty() || password.isEmpty() || mail.isEmpty()) {
-            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
+            binding.addUserBtn.error = "Please fill all fields"
             false
         } else {
             true

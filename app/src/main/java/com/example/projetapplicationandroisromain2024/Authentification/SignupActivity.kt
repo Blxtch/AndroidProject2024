@@ -24,17 +24,12 @@ class SignupActivity : AppCompatActivity() {
             val name = binding.UsernameInput.text.toString()
 
             if (signupPassword.length < 4) {
-                Toast.makeText(
-                    this,
-                    "Password is too short. Must have a minimum of 4 characters.",
-                    Toast.LENGTH_SHORT
-                ).show()
+                binding.UserPasswordInput.error = "Password is too short. Must have a minimum of 4 characters."
                 return@setOnClickListener
             }
 
             if (signupEmail.isBlank() || signupPassword.isBlank()) {
-                Toast.makeText(this, "Email and Password cannot be empty.", Toast.LENGTH_SHORT)
-                    .show()
+                binding.signUpButton.error = "Password and Email cannot be empty"
                 return@setOnClickListener
             }
 
